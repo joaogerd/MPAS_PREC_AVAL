@@ -19,6 +19,7 @@ MPAS/
 │   ├── regrid_gpm_to_mpas.py     # Remapeia GPM para grade do MPAS (lat/lon)
 │   ├── compare_gpm_remap_mpas.py # Compara GPM remapeado com MPAS (visual)
 │   ├── compara.py                # Versão inicial de comparação sem regrid
+│   ├── run_all.py                # Executa toda a cadeia de scripts automaticamente
 │   ├── weights_gpm_to_mpas.nc    # Arquivo de pesos do remapeamento
 │   ├── gpm_remap_to_mpas.nc      # GPM reamostrado (output do regrid)
 │   └── environment.yml           # Ambiente Conda com dependências
@@ -34,14 +35,14 @@ MPAS/
 ### `regrid_gpm_to_mpas.py`
 - **Função**: Reamostra os dados GPM (grade lat-lon 0.1°) para a grade do modelo MPAS.
 - **Entrada**: Dados GPM (`.nc4`) e um arquivo MPAS com as coordenadas alvo.
-- **Saída**: `gpm_remap_to_mpas.nc`, mantida com a dimensão temporal para posterior análise.
+- **Saída**: `data_processed/gpm_remap_to_mpas.nc`, mantida com a dimensão temporal para posterior análise.
 - **Notas**:
   - Utiliza `xesmf` com interpolação bilinear.
-  - Armazena pesos em `weights_gpm_to_mpas.nc` para reaproveitamento.
+  - Armazena pesos em `data_processed/weights_gpm_to_mpas.nc` para reaproveitamento.
 
 ### `compare_gpm_remap_mpas.py`
 - **Função**: Gera uma figura comparando GPM reamostrado e MPAS em média diária.
-- **Entrada**: `gpm_remap_to_mpas.nc` e `mpas10km.nc4`.
+- **Entrada**: `data_processed/gpm_remap_to_mpas.nc` e `mpas10km.nc4`.
 - **Saída**: Figura `figs/comparacao_gpm_remap_mpas_blackstyle.png`.
 - **Notas**:
   - Aplicada a mesma escala de cores discreta em ambos os campos.
@@ -50,6 +51,12 @@ MPAS/
 ### `compara.py`
 - **Função**: Primeira versão da comparação usando os dados originais sem remapeamento.
 - **Status**: Substituído por `compare_gpm_remap_mpas.py` para maior consistência espacial.
+
+### `run_all.py`
+- **Função**: Executa automaticamente o fluxo completo do projeto (reamostragem + figura).
+- **Ordem de execução**:
+  1. `regrid_gpm_to_mpas.py`
+  2. `compare_gpm_remap_mpas.py`
 
 ---
 
@@ -68,7 +75,7 @@ name: regrid_env
 channels:
   - conda-forge
 dependencies:
-  - python>=3.10
+  - python>=3.12
   - xarray
   - netCDF4
   - xesmf
@@ -82,6 +89,40 @@ Instalação:
 ```bash
 conda env create -f scripts/environment.yml
 conda activate regrid_env
+```
+
+---
+
+## 🔁 Execução do Projeto
+
+### Pré-requisitos
+Antes de tudo, ative o ambiente Conda:
+```bash
+conda activate regrid_env
+```
+
+### Execução automática
+Para rodar todas as etapas de forma automática (reamostragem + geração de figuras), execute o script abaixo:
+```bash
+python scripts/run_all.py
+```
+
+---
+
+### Estrutura Esperada
+```
+MPAS/
+├── data_processed/
+│   ├── gpm_remap_to_mpas.nc           ← saída do regrid
+│   └── weights_gpm_to_mpas.nc         ← pesos do regrid
+├── figs/
+│   └── comparacao_gpm_remap_mpas_blackstyle.png
+├── scripts/
+│   ├── regrid_gpm_to_mpas.py
+│   ├── compare_gpm_remap_mpas.py
+│   ├── run_all.py
+│   └── environment.yml
+├── README.md
 ```
 
 ---
