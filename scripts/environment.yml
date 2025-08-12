@@ -1,0 +1,14 @@
+name: regrid_env
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - numpy
+  - xarray
+  - netcdf4
+  - xesmf
+  - esmpy
+  - matplotlib
+  - cartopy
+  - scipy
+

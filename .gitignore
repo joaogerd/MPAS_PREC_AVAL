@@ -1,0 +1,29 @@
+# NetCDF
+*.nc
+
+# Figuras
+*.png
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Python/Conda caches
+__pycache__/
+*.pyc
+*.pyo
+.env/
+.venv/
+.envrc
+
+# Editors
+.vscode/
+.idea/
+
+# Backups do Vim
+*.swp
+*.swo
+*.un
+
+# Logs / outputs
+*.log
