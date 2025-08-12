@@ -13,11 +13,28 @@ figs_dir = "figs"
 os.makedirs(data_dir, exist_ok=True)
 os.makedirs(figs_dir, exist_ok=True)
 
-print("[1/3] Reamostrando GPM para grade do MPAS...")
-subprocess.run(["python", os.path.join(scripts_dir, "regrid_gpm_to_mpas.py")], check=True)
 
-print("[2/3] Gerando comparação visual entre GPM reamostrado e MPAS...")
-subprocess.run(["python", os.path.join(scripts_dir, "compare_gpm_remap_mpas.py")], check=True)
+scripts_dir = "scripts"
 
-print("[3/3] Comparação finalizada. Verifique os resultados na pasta 'figs'.")
+def run(script):
+    print(f"[INFO] Executando: {script}")
+    subprocess.run(["python", os.path.join(scripts_dir, script)], check=True)
+
+# Passo 1 - Reamostragem GPM para grade MPAS
+run("regrid_gpm_to_mpas.py")
+
+# Passo 2 - Suavizações (média móvel e gaussiana)
+run("smooth_gpm.py")
+
+# Passo 3 - Comparações visuais
+run("compara.py")
+run("compare_gpm_remap_mpas.py")
+
+# Passo 4 - Análises espectrais
+run("spectral_analysis.py")
+run("spectral_power_comparison.py")
+run("spectral_efficiency.py")
+
+print("[INFO] Todos os passos foram concluídos com sucesso.")
+
 

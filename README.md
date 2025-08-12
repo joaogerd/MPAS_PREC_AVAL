@@ -13,19 +13,23 @@ Avaliar a resolução efetiva da precipitação simulada pelo modelo MONAN/MPAS 
 ## Estrutura de Diretórios
 ```
 MPAS/
-├── data_processed/               # Arquivos intermediários e processados (NetCDF)
-├── figs/                         # Figuras geradas pelos scripts
-├── scripts/                      # Scripts Python utilizados nas análises
-│   ├── regrid_gpm_to_mpas.py     # Remapeia GPM para grade do MPAS (lat/lon)
-│   ├── compare_gpm_remap_mpas.py # Compara GPM remapeado com MPAS (visual)
-│   ├── compara.py                # Versão inicial de comparação sem regrid
-│   ├── run_all.py                # Executa toda a cadeia de scripts automaticamente
-│   ├── weights_gpm_to_mpas.nc    # Arquivo de pesos do remapeamento
-│   ├── gpm_remap_to_mpas.nc      # GPM reamostrado (output do regrid)
-│   └── environment.yml           # Ambiente Conda com dependências
-├── gpm.txt                       # Informações dos dados GPM utilizados
-├── mpas.txt                      # Informações dos dados do modelo MPAS
-└── README.md                     # Este arquivo
+├── data_processed               # Arquivos NetCDF intermediários
+├── figs                         # Figuras geradas
+├── gpm.txt                      # Lista de arquivos GPM
+├── mpas.txt                     # Lista de arquivos MPAS
+├── README.md                    # Documentação detalhada
+└── scripts                      # Scripts Python
+    ├── compara.py                       # Comparação entre GPM bruto e MPAS
+    ├── compare_gpm_remap_mpas.py        # Comparação entre GPM reamostrado e MPAS
+    ├── environment.yml                  # Ambiente Conda
+    ├── notebook_spectral.ipynb          # Notebook com análise espectral
+    ├── regrid_gpm_to_mpas.py            # Reamostragem do GPM para grade do MPAS
+    ├── run_all.py                       # Executa todo o pipeline
+    ├── smooth_field.py                  # Suavização genérica de campos 2D
+    ├── smooth_gpm.py                    # Suavização do campo GPM
+    ├── spectral_analysis.py             # Análise espectral dos campos
+    ├── spectral_efficiency.py           # Cálculo da eficiência espectral
+    └── spectral_power_comparison.py     # Comparação da potência espectral
 ```
 
 ---
@@ -52,13 +56,82 @@ MPAS/
 - **Função**: Primeira versão da comparação usando os dados originais sem remapeamento.
 - **Status**: Substituído por `compare_gpm_remap_mpas.py` para maior consistência espacial.
 
-### `run_all.py`
-- **Função**: Executa automaticamente o fluxo completo do projeto (reamostragem + figura).
-- **Ordem de execução**:
-  1. `regrid_gpm_to_mpas.py`
-  2. `compare_gpm_remap_mpas.py`
+### 🧼 `smooth_field.py`
+- **Função:** Suaviza um campo arbitrário (`.nc`) via média móvel ou filtro gaussiano.
+- **Argumentos via CLI:** caminho do arquivo, variável, método e parâmetros.
+- **Uso genérico:** Pode ser reaproveitado para suavizar qualquer campo 2D.
 
 ---
+
+### 🧼 `smooth_gpm.py`
+- **Função:** Aplica suavização ao campo reamostrado do GPM.
+- **Métodos usados:**
+  - Média móvel 3x3: `uniform_filter`
+  - Gaussiano σ=1: `gaussian_filter`
+- **Saída:** Dois novos arquivos em `data_processed/` com os campos suavizados.
+
+---
+
+### 📈 `spectral_analysis.py`
+- **Função:** Compara os espectros de potência 2D dos campos GPM, suavizados e MPAS.
+- **Etapas:**
+  1. Aplica FFT2 + `fftshift`
+  2. Calcula média radial
+  3. Plota todos os espectros
+- **Saída:** `figs/espectros_potencia.png`
+
+---
+
+### 📊 `spectral_power_comparison.py`
+- **Função:** Plota espectros absolutos lado a lado para avaliar qual campo tem mais energia em diferentes escalas.
+- **Saída:** `figs/comparacao_potencia.png`
+
+---
+
+### 📊 `spectral_efficiency.py`
+- **Função:** Calcula e plota a eficiência espectral:
+
+\[
+\text{Eficiência Espectral}(k) = \frac{E_{\text{GPM}}(k)}{E_{\text{MPAS}}(k)}
+\]
+
+Onde:
+- \( E(k) \): Espectro de potência em função do número de onda radial \( k \)
+- Compara:
+  - GPM original
+  - GPM média móvel
+  - GPM gaussiano
+- **Saída:** `figs/eficiencia_espectral.png`
+
+---
+
+### ▶️ `run_all.py`
+- **Função:** Executa todos os passos na ordem correta:
+  1. Regrid do GPM
+  2. Suavizações
+  3. Geração dos gráficos comparativos
+  4. Análises espectrais
+- **Uso:** Basta rodar `python scripts/run_all.py`
+
+# 🧠 Interpretação Física
+
+- **Alta frequência (k alto):** indica estruturas pequenas (chuvas localizadas)
+- **Eficiência espectral > 1:** o GPM tem mais energia que o MPAS nessa escala → MPAS filtra estruturas pequenas
+- **Eficiência espectral ≈ 1:** MPAS e GPM representam igualmente
+- **Eficiência espectral < 1:** improvável, mas pode indicar sobreestimação do MPAS
+
+---
+
+## ✨ Resultados Esperados
+
+- Determinar em que escalas o MPAS perde resolução comparado ao GPM.
+- Identificar a resolução efetiva do modelo.
+- Avaliar se suavizações aproximam o GPM da resposta espectral do MPAS.
+
+
+---
+
+
 
 ## Próximas Etapas
 1. **Remapeamento do GPM para a grade *nativa* do MPAS (Voronoi)** – ainda a ser implementado.
@@ -127,5 +200,6 @@ MPAS/
 
 ---
 
-Para dúvidas ou reprodutibilidade, contatar: **João Gerd Zell de Mattos**
+Dúvidas ou sugestões? Fale com [João Gerd Zell de Mattos](mailto:joaogerd@inpe.br)
+
 
