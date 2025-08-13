@@ -18,6 +18,79 @@ Este projeto realiza a comparação entre as estimativas de precipitação do sa
 
 ---
 
+## 🧭 **Resumo do Projeto MPAS\_PREC\_AVAL (até aqui)**
+
+### 🎯 **Objetivo principal**
+
+Comparar a precipitação simulada pelo modelo **MPAS** com a observada pelo **GPM** (IMERG) em termos de:
+
+* Distribuição espacial
+* Eficiência espectral
+* Potência espectral
+
+De forma automatizada, com geração de figuras comparativas, espectros e notebook.
+
+---
+
+## 🗂️ **Pipeline atual**
+
+### 1. **Dados**
+
+* **GPM** (IMERG 1h → remapeado para grade MPAS)
+* **MPAS** (precipitação diária)
+
+### 2. **Scripts envolvidos**
+
+| Etapa             | Script                                     | Função                                       |
+| ----------------- | ------------------------------------------ | -------------------------------------------- |
+| Regradeamento     | `regrid_gpm_to_mpas.py`                    | Remapeia o GPM para a grade do MPAS          |
+| Suavização        | `smooth_gpm.py`                            | Aplica suavizações (movmean 3x3 e Gaussiana) |
+| Comparação direta | `compare_gpm_remap_mpas.py` / `compare.py` | Plota mapas comparativos GPM vs MPAS         |
+| Espectro          | `spectral_analysis.py` → `spectral.py`     | Gera espectros de potência e eficiência      |
+| Visualização      | `plot_map.py`                              | Ver mapas NetCDF com Cartopy                 |
+
+---
+
+## 🤔 **Por que a suavização foi incluída?**
+
+A suavização foi proposta para **investigar o efeito da resolução** e do "ruído de alta frequência" do GPM, porque:
+
+* A resolução do GPM (0.1°) pode conter variações de alta frequência que o MPAS (10 km) não capta.
+* A suavização ajudaria a ver como essas variações influenciam o espectro.
+
+**Ou seja:**
+
+> Comparamos o GPM original, suavizado com média móvel (MOV) e suavizado com Gauss (GAU) com o MPAS.
+
+Isso está diretamente ligado ao cálculo de **eficiência espectral**:
+
+$$
+\text{Eficiência} = \frac{E_{\text{GPM}}(k)}{E_{\text{MPAS}}(k)}
+$$
+
+---
+
+## 😵‍💫 **Mas o que deu errado?**
+
+* O GPM contém **muitos NaNs** (como é esperado em campos reais de precipitação).
+* Os métodos `uniform_filter` e `gaussian_filter` **não lidam com NaNs**, o que fez a suavização **propagar os NaNs**.
+* Mesmo usando `rolling().mean()` do xarray, os NaNs **ainda dominam** e a suavização retorna campos quase vazios.
+* Isso impacta diretamente o espectro: GPM suavizado (MOV) aparece como `nan` ou com valores absurdamente baixos.
+
+---
+
+## ✅ **Conclusão: manter ou remover a suavização?**
+
+Depende do que tu quer demonstrar:
+
+| Objetivo                                                              | Suavização é útil? |
+| --------------------------------------------------------------------- | ------------------ |
+| Avaliar se o MPAS representa bem a precipitação observada             | ❌ **Não**          |
+| Estudar como diferentes níveis de suavização do GPM afetam o espectro | ✅ **Sim**          |
+| Comparar diretamente o espectro bruto dos dois campos                 | ❌ **Não precisa**  |
+
+---
+
 ## Estrutura de Diretórios
 
 ```
