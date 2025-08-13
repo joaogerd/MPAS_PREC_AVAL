@@ -3,12 +3,15 @@ channels:
   - conda-forge
 dependencies:
   - python=3.12
+  - pip
   - numpy
   - xarray
+  - bottleneck
   - netcdf4
   - xesmf
   - esmpy
   - matplotlib
-  - cartopy
+  - cartopy>=0.21
   - scipy
+
 
