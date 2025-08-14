@@ -41,13 +41,14 @@ De forma automatizada, com geração de figuras comparativas, espectros e notebo
 
 ### 2. **Scripts envolvidos**
 
-| Etapa             | Script                                     | Função                                       |
-| ----------------- | ------------------------------------------ | -------------------------------------------- |
-| Regradeamento     | `regrid_gpm_to_mpas.py`                    | Remapeia o GPM para a grade do MPAS          |
-| Suavização        | `smooth_gpm.py`                            | Aplica suavizações (movmean 3x3 e Gaussiana) |
-| Comparação direta | `compare_gpm_remap_mpas.py` / `compare.py` | Plota mapas comparativos GPM vs MPAS         |
-| Espectro          | `spectral_analysis.py` → `spectral.py`     | Gera espectros de potência e eficiência      |
-| Visualização      | `plot_map.py`                              | Ver mapas NetCDF com Cartopy                 |
+| Etapa             | Script        | Função                             |
+| ----------------- | ------------- | ---------------------------------- |
+| Regradeamento     | `regrid.py`   | Remapeia GPM → MPAS                |
+| Suavização        | `smooth.py`   | Média móvel 3x3 e filtro gaussiano |
+| Comparação direta | `compare.py`  | Painéis comparativos GPM × MPAS    |
+| Espectro          | `spectral.py` | Potência e eficiência espectral    |
+| Visualização      | `plot_map.py` | Mapas NetCDF com Cartopy           |
+| CLI               | `cli.py`      | Interface única de execução        |
 
 ---
 
@@ -266,7 +267,5 @@ python scripts/run_all.py
 
 ![Eficiência Espectral](figs/eficiencia_espectral.png)
 ---
-
-Dúvidas ou sugestões? Fale com [João Gerd Zell de Mattos](mailto:joaogerd@inpe.br)
 
 
