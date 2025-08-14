@@ -261,7 +261,8 @@ python scripts/run_all.py
 
 ### Espectros de Potência
 
-![Espectros de Potência](figs/espectros_precipitacao.png)
+![Espectros de Potência](figs/espectros_precipitacao_black.png)
+
 
 ### Eficiência Espectral
 
