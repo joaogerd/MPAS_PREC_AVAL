@@ -263,6 +263,46 @@ python scripts/run_all.py
 
 ![Espectros de Potência](figs/espectros_precipitacao_black.png)
 
+O gráfico mostra o **espectro radial de precipitação** (unidades em mm/dia, eixo vertical em log₁₀ do poder espectral) para os dois conjuntos de dados:
+
+* **GPM** (azul) — satélite (observações).
+* **MPAS** (laranja) — simulação do modelo.
+
+### Observações principais
+
+1. **Diferença de amplitude geral**
+
+   * O MPAS apresenta valores de potência **significativamente maiores** em praticamente todo o espectro de números de onda, especialmente nas escalas médias e pequenas (wavenumber > \~100).
+   * Isso indica que o modelo está gerando precipitação com maior variabilidade espacial/amplitude em todas as escalas em comparação com o GPM.
+
+2. **Escalas grandes (wavenumber baixo)**
+
+   * No início do espectro (wavenumber < \~50), ambos têm comportamento semelhante, mas o MPAS começa com um pico de potência um pouco maior.
+   * Isso sugere que o MPAS tem sistemas de precipitação de grande escala mais intensos que os observados.
+
+3. **Escalas médias (wavenumber 100–800)**
+
+   * A inclinação da curva é parecida para GPM e MPAS, mas o MPAS mantém um deslocamento positivo no log₁₀ Power (\~0.3–0.5 acima).
+   * Isso indica que a estrutura espacial média está mais energizada no modelo.
+
+4. **Escalas pequenas (wavenumber > 1000)**
+
+   * O MPAS mantém potência relativamente alta até os maiores wavenumbers, enquanto o GPM cai mais rapidamente.
+   * Isso sugere que o MPAS contém **mais detalhe fino** (ou ruído) na precipitação — possivelmente excesso de variabilidade em pequenas escalas, o que pode estar relacionado à física de convecção ou ao pós-processamento.
+
+5. **Forma do espectro**
+
+   * Ambos apresentam a queda típica aproximadamente em lei de potência, mas o MPAS é “paralelo” ao GPM com offset positivo na maior parte do domínio.
+   * Isso significa que o modelo está capturando razoavelmente o *shape* do espectro observado, mas superestimando a magnitude.
+
+---
+
+### Interpretação física
+
+* **Superestimação de energia**: O MPAS provavelmente está gerando precipitação com intensidade excessiva em várias escalas, ou então o campo não foi filtrado para remoção de ruído de alta frequência.
+* **Excesso de detalhe em alta resolução**: Pode indicar que a física do modelo (parametrizações convectivas, microfísica) está permitindo muita variabilidade subescala em relação ao observado.
+* **Bom padrão espectral**: Apesar da diferença de magnitude, o paralelismo das curvas sugere que o modelo reproduz a distribuição relativa da energia entre escalas.
+
 
 ### Eficiência Espectral
 
