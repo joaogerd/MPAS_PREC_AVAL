@@ -1,16 +1,16 @@
 # NetCDF
 *.nc
 
-# Figuras
-
-# OS
+# --- SO / IDE ---
 .DS_Store
 Thumbs.db
+.vscode/
+.idea/
 
 # Python/Conda caches
 __pycache__/
-*.pyc
-*.pyo
+*.py[cod]
+.ipynb_checkpoints/
 .env/
 .venv/
 .envrc
@@ -24,5 +24,18 @@ __pycache__/
 *.swo
 *.un
 
-# Logs / outputs
+# Temp / Logs / outputs
 *.log
+*.orig
+*.tmp
+
+# --- Notebooks (se quiser versionar depois, remove esta linha) ---
+*.ipynb
+
+# --- PDFs gerados (mas permite PDFs dentro de figs/) ---
+*.pdf
+!figs/**/*.pdf
+
+# --- Não ignore as figuras (qualquer coisa em figs/) ---
+!figs/
+!figs/**

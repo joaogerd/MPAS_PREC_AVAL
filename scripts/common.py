@@ -40,6 +40,17 @@ def resolve_paths(root: str | None = None) -> Paths:
     figs_dir.mkdir(exist_ok=True, parents=True)
     return Paths(root=root_path, data_dir=data_dir, figs_dir=figs_dir)
 
+def get_spatial_dims(da: xr.DataArray) -> tuple[str, str]:
+    lat_names = {"lat", "latitude", "y"}
+    lon_names = {"lon", "longitude", "x"}
+    dims = da.dims
+    lat_dim = next((d for d in dims if d.lower() in lat_names), None)
+    lon_dim = next((d for d in dims if d.lower() in lon_names), None)
+    if lat_dim is None or lon_dim is None:
+        raise ValueError(f"Não foi possível detectar dimensões espaciais em: {dims}")
+    return lat_dim, lon_dim
+
+
 def setup_logging(level: int = logging.INFO) -> None:
     logging.basicConfig(
         format="[%(levelname)s] %(message)s", level=level
